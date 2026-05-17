@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — FromShlokaToSoftware</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <nav>
+    <span class="logo">ॐ FSTS</span>
+    <div class="nav-links">
+      <a href="login.html" class="btn-ghost">Login</a>
+    </div>
+  </nav>
+
+  <div class="page-center">
+    <a href="index.html" class="back-link">← Back</a>
+
+    <img src="sprites.png" alt="deities" class="sprites float" style="max-width:420px; height:130px; object-fit:cover; object-position: center top;" />
+
+    <div class="form-card">
+      <h1>CREATE ACCOUNT</h1>
+      <p class="subtitle">Your journey to the gods begins here</p>
+
+      <form onsubmit="handleSignup(event)">
+        <div class="input-group">
+          <label>USERNAME</label>
+          <input type="text" id="username" placeholder="ArjunaTheFearless" required />
+        </div>
+
+        <div class="input-group">
+          <label>EMAIL</label>
+          <input type="email" id="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="input-group">
+          <label>PASSWORD</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <div>
+          <span class="deity-label">CHOOSE YOUR GUIDE</span>
+          <div class="deity-grid">
+            <div class="deity-option selected" onclick="selectDeity(this, 'Ganesha')">
+              <span class="deity-emoji">🐘</span>
+              <span class="deity-name">GANESHA</span>
+              <span class="deity-desc">Remover of obstacles</span>
+            </div>
+            <div class="deity-option" onclick="selectDeity(this, 'Saraswati')">
+              <span class="deity-emoji">🎵</span>
+              <span class="deity-name">SARASWATI</span>
+              <span class="deity-desc">Goddess of wisdom</span>
+            </div>
+            <div class="deity-option" onclick="selectDeity(this, 'Hanuman')">
+              <span class="deity-emoji">🙏</span>
+              <span class="deity-name">HANUMAN</span>
+              <span class="deity-desc">God of devotion</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gold" style="width:100%; font-size:11px; padding:16px;">
+          ▶ START LEARNING
+        </button>
+      </form>
+
+      <p class="form-footer">
+        Already have an account? <a href="login.html">Login</a>
+      </p>
+    </div>
+
+    <p class="bottom-note">ॐ FREE FOREVER FOR LEARNERS ॐ</p>
+  </div>
+
+  <footer>© 2026 FROMSHLOKATOSOFTWARE</footer>
+
+  <script>
+    let selectedDeity = 'Ganesha';
+
+    function selectDeity(el, name) {
+      document.querySelectorAll('.deity-option').forEach(d => d.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedDeity = name;
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      alert('Account created! (Backend coming soon) — Guide: ' + selectedDeity);
+    }
+  </script>
+
+</body>
+</html>

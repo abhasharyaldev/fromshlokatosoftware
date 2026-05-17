@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — FromShlokaToSoftware</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <nav>
+    <span class="logo">ॐ FSTS</span>
+    <div class="nav-links">
+      <a href="signup.html" class="btn-gold">Sign Up</a>
+    </div>
+  </nav>
+
+  <div class="page-center">
+    <a href="index.html" class="back-link">← Back</a>
+
+    <div class="form-card">
+      <div style="font-size: 52px; text-align:center;">🪔</div>
+      <h1>WELCOME BACK</h1>
+      <p class="subtitle">The gods await your return</p>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <label>EMAIL</label>
+          <input type="email" id="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="input-group">
+          <label>PASSWORD</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-gold" style="width:100%; font-size:11px; padding:16px;">
+          ▶ CONTINUE JOURNEY
+        </button>
+      </form>
+
+      <p class="form-footer">
+        New here? <a href="signup.html">Create an account</a>
+      </p>
+    </div>
+  </div>
+
+  <footer>© 2026 FROMSHLOKATOSOFTWARE</footer>
+
+  <script>
+    function handleLogin(e) {
+      e.preventDefault();
+      alert('Login coming soon — backend not connected yet!');
+    }
+  </script>
+
+</body>
+</html>
