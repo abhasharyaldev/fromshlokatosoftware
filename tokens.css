@@ -1,0 +1,87 @@
+/* Shakti — design tokens
+ * Hallmark custom theme · vibe: "deep navy, pixel shrine, gold fire, retro-arcade"
+ * axes: dark / mono / chromatic-amber ~90°
+ */
+
+:root {
+  /* ── Color ─────────────────────────────────── */
+  --color-paper:            oklch(12% 0.045 265);   /* deep navy */
+  --color-paper-2:          oklch(17% 0.052 264);   /* card surface */
+  --color-paper-3:          oklch(22% 0.048 265);   /* hover surface */
+  --color-ink:              oklch(96% 0.008 265);   /* primary text */
+  --color-ink-2:            oklch(75% 0.010 265);   /* secondary text */
+  --color-muted:            oklch(50% 0.018 265);   /* de-emphasised */
+  --color-rule:             oklch(28% 0.030 265);   /* dividers */
+  --color-rule-2:           oklch(21% 0.026 265);   /* subtle dividers */
+  --color-accent:           oklch(87% 0.19  90);    /* gold — XP, Sanskrit, highlights */
+  --color-accent-dim:       oklch(72% 0.14  90);    /* gold hover state */
+  --color-accent-gold-shadow: oklch(65% 0.15  90);  /* gold button depth */
+  --color-accent-glow:      oklch(87% 0.19  90 / 0.4);
+  --color-accent-glow-soft: oklch(87% 0.19  90 / 0.15);
+  --color-fire:             oklch(65% 0.20  42);    /* saffron — battle, warnings */
+  --color-fire-dim:         oklch(54% 0.16  42);
+  --color-fire-shadow:      oklch(45% 0.17  42);
+  --color-fire-glow:        oklch(65% 0.20  42 / 0.5);
+  --color-focus:            oklch(89% 0.22  90);    /* :focus-visible ring */
+  --color-silver:           oklch(78% 0.008 265);   /* #2 rank */
+  --color-bronze:           oklch(62% 0.085  50);   /* #3 rank */
+  --color-correct:          oklch(72% 0.18  142);   /* correct answer */
+  --color-correct-bg:       oklch(72% 0.18  142 / 0.18);
+  --color-correct-text:     oklch(85% 0.14  142);
+  --color-wrong:            oklch(58% 0.20   25);   /* wrong answer */
+  --color-wrong-bg:         oklch(58% 0.20   25 / 0.18);
+  --color-wrong-text:       oklch(75% 0.18   25);
+
+  /* ── Typography ─────────────────────────────── */
+  --font-display: "Press Start 2P", monospace;  /* pixel headings, labels */
+  --font-body:    "VT323", monospace;           /* retro body, Sanskrit display */
+
+  /* Scale — Press Start 2P legible at ≥ 10px; VT323 at ≥ 20px */
+  --text-px:      0.5rem;    /* 8px  */
+  --text-xs:      0.625rem;  /* 10px */
+  --text-sm:      0.75rem;   /* 12px */
+  --text-md:      1rem;      /* 16px */
+  --text-lg:      1.25rem;   /* 20px */
+  --text-xl:      1.5rem;    /* 24px */
+  --text-2xl:     2rem;      /* 32px */
+  --text-vt-base: 1.5rem;    /* 24px — VT323 minimum */
+  --text-vt-lg:   2rem;      /* 32px */
+  --text-vt-xl:   2.5rem;    /* 40px */
+  --text-sanskrit: clamp(3rem, 9vw, 5rem);
+
+  /* ── Spacing — 4pt scale ────────────────────── */
+  --space-1:  0.25rem;   /*  4px */
+  --space-2:  0.5rem;    /*  8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+
+  /* ── Motion ─────────────────────────────────── */
+  --dur-fast:    100ms;
+  --dur-short:   180ms;
+  --dur-mid:     300ms;
+  --dur-long:    500ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* ── Layout ─────────────────────────────────── */
+  --nav-height:    4rem;
+  --header-height: 3.5rem;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* ── Z-index scale ──────────────────────────── */
+  --z-base:    1;
+  --z-raised:  10;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-nav:     400;
+}

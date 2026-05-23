@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shakti — Learn Sanskrit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    /* Hallmark · macrostructure: Workbench · custom theme · nav: mobile bottom-tab · footer: none
+     * theme: custom · vibe: "deep navy, pixel shrine, gold fire, retro-arcade"
+     * paper: oklch(12% 0.045 265) · accent: oklch(87% 0.19 90)
+     * display: Press Start 2P · body: VT323 · axes: dark / mono / chromatic-amber ~90°
+     * studied: no · context: explicit · v0.8.0
+     * Pre-emit critique: P5 H4 E5 S5 R4 V4
+     */
+
+    /* ── TOKENS ─────────────────────────────── */
+    :root {
+      /* Color — all values via var() in every declaration below */
+      --color-paper:        oklch(12% 0.045 265);
+      --color-paper-2:      oklch(17% 0.052 264);
+      --color-paper-3:      oklch(22% 0.048 265);
+      --color-ink:          oklch(96% 0.008 265);
+      --color-ink-2:        oklch(75% 0.010 265);
+      --color-muted:        oklch(50% 0.018 265);
+      --color-rule:         oklch(28% 0.030 265);
+      --color-rule-2:       oklch(21% 0.026 265);
+      --color-accent:       oklch(87% 0.19 90);
+      --color-accent-dim:   oklch(72% 0.14 90);
+      --color-fire:         oklch(65% 0.20 42);
+      --color-fire-dim:     oklch(54% 0.16 42);
+      --color-fire-shadow:  oklch(45% 0.17 42);
+      --color-focus:        oklch(89% 0.22 90);
+      --color-silver:       oklch(78% 0.008 265);
+      --color-bronze:       oklch(62% 0.085 50);
+      --color-correct:      oklch(72% 0.18 142);
+      --color-correct-bg:   oklch(72% 0.18 142 / 0.18);
+      --color-correct-text: oklch(85% 0.14 142);
+      --color-wrong:        oklch(58% 0.20 25);
+      --color-wrong-bg:     oklch(58% 0.20 25 / 0.18);
+      --color-wrong-text:   oklch(75% 0.18 25);
+      --color-accent-glow:  oklch(87% 0.19 90 / 0.4);
+      --color-accent-glow-soft: oklch(87% 0.19 90 / 0.15);
+      --color-fire-glow:    oklch(65% 0.20 42 / 0.5);
+      --color-accent-gold-shadow: oklch(65% 0.15 90);
+
+      /* Fonts */
+      --font-display: "Press Start 2P", monospace;
+      --font-body:    "VT323", monospace;
+
+      /* Text scale — Press Start 2P needs ≥ 10px; VT323 needs ≥ 20px */
+      --text-px:      0.5rem;   /* 8px  — absolute minimum pixel labels */
+      --text-xs:      0.625rem; /* 10px — small pixel labels */
+      --text-sm:      0.75rem;  /* 12px — standard pixel text */
+      --text-md:      1rem;     /* 16px */
+      --text-lg:      1.25rem;  /* 20px */
+      --text-xl:      1.5rem;   /* 24px */
+      --text-2xl:     2rem;     /* 32px */
+      --text-vt-base: 1.5rem;   /* 24px — VT323 body minimum */
+      --text-vt-lg:   2rem;     /* 32px — VT323 large */
+      --text-vt-xl:   2.5rem;   /* 40px */
+      --text-sanskrit: clamp(3rem, 9vw, 5rem);
+
+      /* Spacing — 4pt scale */
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-5:  1.25rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+
+      /* Motion */
+      --dur-fast:   100ms;
+      --dur-short:  180ms;
+      --dur-mid:    300ms;
+      --dur-long:   500ms;
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in:    cubic-bezier(0.7, 0, 0.84, 0);
+      --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+
+      /* Layout */
+      --nav-height:    4rem;
+      --header-height: 3.5rem;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 8px;
+
+      /* Z-index scale */
+      --z-base:    1;
+      --z-raised:  10;
+      --z-overlay: 100;
+      --z-modal:   200;
+      --z-toast:   300;
+      --z-nav:     400;
+    }
+
+    /* ── RESET ───────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: clip; height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      font-size: var(--text-vt-base);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
+
+    /* ── APP SHELL ──────────────────────────── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+      background: var(--color-paper);
+    }
+    @media (min-width: 520px) {
+      body {
+        background: oklch(8% 0.030 265);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .app {
+        box-shadow: 0 0 80px var(--color-accent-glow-soft);
+        border: 1px solid var(--color-rule);
+      }
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    .app-header {
+      height: var(--header-height);
+      background: var(--color-paper-2);
+      border-bottom: 2px solid var(--color-rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-4);
+      flex-shrink: 0;
+      z-index: var(--z-raised);
+    }
+    .app-header__wordmark {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      text-shadow: 0 0 12px var(--color-accent-glow);
+      letter-spacing: 0.04em;
+    }
+    .app-header__stats {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .stat-pill {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-accent);
+      background: var(--color-accent-glow-soft);
+      border: 1px solid oklch(87% 0.19 90 / 0.35);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-pill--fire {
+      color: var(--color-fire);
+      background: oklch(65% 0.20 42 / 0.12);
+      border-color: oklch(65% 0.20 42 / 0.35);
+    }
+
+    /* ── BOTTOM NAV ─────────────────────────── */
+    .bottom-nav {
+      height: var(--nav-height);
+      background: var(--color-paper-2);
+      border-top: 2px solid var(--color-rule);
+      display: flex;
+      align-items: stretch;
+      flex-shrink: 0;
+      z-index: var(--z-nav);
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--space-2) var(--space-1);
+      position: relative;
+      transition: background-color var(--dur-fast) var(--ease-out);
+    }
+    .nav-btn:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: -2px;
+    }
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 56%;
+      height: 2px;
+      background: var(--color-accent);
+      transition: transform var(--dur-short) var(--ease-out);
+    }
+    .nav-btn.is-active::after { transform: translateX(-50%) scaleX(1); }
+    .nav-btn__icon { font-size: 1.35rem; line-height: 1; }
+    .nav-btn__label {
+      font-family: var(--font-display);
+      font-size: 0.44rem;
+      color: var(--color-muted);
+      transition: color var(--dur-fast) var(--ease-out);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .nav-btn.is-active .nav-btn__label { color: var(--color-accent); }
+    .nav-btn--battle::after { background: var(--color-fire); }
+    .nav-btn--battle.is-active .nav-btn__label { color: var(--color-fire); }
+
+    /* ── VIEWS ──────────────────────────────── */
+    .view-container { flex: 1; overflow: hidden; position: relative; }
+    .view {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: none;
+    }
+    .view.is-active { display: block; }
+    .view::-webkit-scrollbar { width: 3px; }
+    .view::-webkit-scrollbar-track { background: var(--color-paper); }
+    .view::-webkit-scrollbar-thumb { background: var(--color-rule); border-radius: 2px; }
+
+    /* ── VIEW: LEARN ────────────────────────── */
+    .learn-view { padding: var(--space-6) var(--space-4) var(--space-10); }
+
+    .learn-category { margin-bottom: var(--space-10); }
+    .learn-category__title {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-accent);
+      letter-spacing: 0.12em;
+      margin-bottom: var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .learn-category__title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      box-shadow: 0 0 8px var(--color-accent-glow);
+      flex-shrink: 0;
+    }
+
+    /* Temple staircase path */
+    .learn-path {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      position: relative;
+    }
+    .learn-path::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: var(--space-8);
+      bottom: var(--space-8);
+      width: 2px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--color-rule) 0,
+        var(--color-rule) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .lesson-node {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .lesson-node:nth-child(odd)  { padding-right: 38%; }
+    .lesson-node:nth-child(even) { padding-left:  38%; }
+
+    .lesson-btn {
+      width: 100%;
+      max-width: 168px;
+      background: var(--color-paper-2);
+      border: 2px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      text-align: center;
+      transition:
+        transform var(--dur-short) var(--ease-out),
+        border-color var(--dur-short) var(--ease-out),
+        box-shadow var(--dur-short) var(--ease-out);
+    }
+    .lesson-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+    .lesson-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--color-accent-dim);
+    }
+    .lesson-btn--complete {
+      border-color: oklch(87% 0.19 90 / 0.55);
+      box-shadow: 0 0 16px oklch(87% 0.19 90 / 0.22), inset 0 0 20px oklch(87% 0.19 90 / 0.07);
+    }
+    .lesson-btn--active {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 20px var(--color-accent-glow);
+      animation: pulse-gold 2.4s var(--ease-in-out) infinite;
+    }
+    .lesson-btn--locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.7);
+    }
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 14px oklch(87% 0.19 90 / 0.28); }
+      50%       { box-shadow: 0 0 30px oklch(87% 0.19 90 / 0.58), 0 0 56px oklch(87% 0.19 90 / 0.18); }
+    }
+    .lesson-btn__icon  { font-size: 1.6rem; margin-bottom: var(--space-1); display: block; }
+    .lesson-btn__title {
+      font-family: var(--font-display);
+      font-size: 0.48rem;
+      color: var(--color-ink-2);
+      line-height: 1.7;
+      display: block;
+    }
+    .lesson-btn--complete .lesson-btn__title,
+    .lesson-btn--active  .lesson-btn__title { color: var(--color-accent); }
+    .lesson-btn__check  { font-size: 0.7rem; color: var(--color-accent); margin-top: 2px; display: block; }
+
+    /* ── VIEW: LEADERBOARD ──────────────────── */
+    .leaderboard-view { padding: var(--space-6) var(--space-4) var(--space-10); }
+    .lb-title {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      color: var(--color-accent);
+      text-align: center;
+      margin-bottom: var(--space-6);
+      text-shadow: 0 0 24px var(--color-accent-glow);
+      letter-spacing: 0.04em;
+    }
+
+    /* Podium */
+    .lb-podium {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding: var(--space-4) 0;
+    }
+    .podium-player {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .podium-player__trophy {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 0 8px var(--color-accent-glow));
+    }
+    .podium-player--2 .podium-player__trophy { filter: drop-shadow(0 0 6px oklch(78% 0.008 265 / 0.5)); }
+    .podium-player--3 .podium-player__trophy { filter: drop-shadow(0 0 6px oklch(62% 0.085 50 / 0.5)); }
+    .podium-player__name {
+      font-family: var(--font-display);
+      font-size: 0.44rem;
+      color: var(--color-ink-2);
+      text-align: center;
+      max-width: 80px;
+      line-height: 1.6;
+    }
+    .podium-player__xp {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .podium-player--2 .podium-player__xp { color: var(--color-silver); }
+    .podium-player--3 .podium-player__xp { color: var(--color-bronze); }
+    .podium-base {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      min-width: 76px;
+      text-align: center;
+    }
+    .podium-base--1 {
+      height: 60px;
+      background: oklch(87% 0.19 90 / 0.18);
+      border: 2px solid oklch(87% 0.19 90 / 0.55);
+    }
+    .podium-base--2 {
+      height: 44px;
+      background: oklch(78% 0.008 265 / 0.12);
+      border: 2px solid oklch(78% 0.008 265 / 0.38);
+    }
+    .podium-base--3 {
+      height: 32px;
+      background: oklch(62% 0.085 50 / 0.12);
+      border: 2px solid oklch(62% 0.085 50 / 0.38);
+    }
+    .podium-base__rank {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--color-accent);
+    }
+    .podium-base--2 .podium-base__rank { color: var(--color-silver); }
+    .podium-base--3 .podium-base__rank { color: var(--color-bronze); }
+
+    /* Table */
+    .lb-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+    .lb-table th {
+      font-family: var(--font-display);
+      font-size: 0.44rem;
+      color: var(--color-muted);
+      text-align: left;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--color-rule);
+      letter-spacing: 0.06em;
+    }
+    .lb-row { border-bottom: 1px solid var(--color-rule-2); }
+    .lb-row:hover { background: oklch(87% 0.19 90 / 0.04); }
+    .lb-row--self {
+      background: oklch(87% 0.19 90 / 0.09);
+      border-top: 1px solid oklch(87% 0.19 90 / 0.28);
+      border-bottom: 1px solid oklch(87% 0.19 90 / 0.28);
+    }
+    .lb-row td {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-ink-2);
+      padding: var(--space-2) var(--space-3);
+    }
+    .lb-row__rank { font-family: var(--font-display); font-size: var(--text-px); color: var(--color-muted); width: 2rem; }
+    .lb-row__name { font-family: var(--font-display); font-size: 0.48rem; color: var(--color-ink) !important; line-height: 2; }
+    .lb-row--self .lb-row__name { color: var(--color-accent) !important; }
+    .lb-row__xp    { color: var(--color-accent) !important; }
+    .lb-row__streak { color: var(--color-fire) !important; }
+
+    /* ── VIEW: BATTLE ───────────────────────── */
+    .battle-view { display: flex; flex-direction: column; height: 100%; }
+
+    /* Lobby */
+    .battle-lobby {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-6);
+      gap: var(--space-6);
+      height: 100%;
+    }
+    .battle-lobby__title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-fire);
+      text-align: center;
+      text-shadow: 0 0 24px var(--color-fire-glow);
+      animation: flicker 3.5s var(--ease-in-out) infinite;
+      line-height: 1.6;
+    }
+    @keyframes flicker {
+      0%, 91%, 95%, 100% { opacity: 1; }
+      93% { opacity: 0.82; }
+    }
+    .battle-lobby__desc {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-ink-2);
+      text-align: center;
+      max-width: 30ch;
+      line-height: 1.5;
+    }
+    .battle-lobby__rules {
+      background: var(--color-paper-2);
+      border: 1px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4) var(--space-6);
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .battle-lobby__rules p {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-ink-2);
+    }
+    .battle-lobby__rules span { color: var(--color-accent); }
+    .battle-start-btn {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--color-paper);
+      background: var(--color-fire);
+      border: none;
+      padding: var(--space-4) var(--space-8);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.04em;
+      transition:
+        transform var(--dur-short) var(--ease-out),
+        box-shadow var(--dur-short) var(--ease-out);
+      box-shadow: 0 4px 0 var(--color-fire-shadow), 0 0 28px var(--color-fire-glow);
+    }
+    .battle-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 var(--color-fire-shadow), 0 0 40px var(--color-fire-glow);
+    }
+    .battle-start-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 var(--color-fire-shadow);
+    }
+    .battle-start-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+    /* Arena */
+    .battle-arena { display: none; flex-direction: column; height: 100%; }
+    .battle-arena.is-active { display: flex; }
+
+    .battle-scoreboard {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-paper-2);
+      border-bottom: 1px solid var(--color-rule);
+      flex-shrink: 0;
+    }
+    .battle-player-info { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .battle-player-info__deity { font-size: 1.5rem; }
+    .battle-player-info__name { font-family: var(--font-display); font-size: 0.4rem; color: var(--color-muted); }
+    .battle-player-info__score {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .battle-round-dots { display: flex; gap: var(--space-2); align-items: center; }
+    .round-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--color-rule);
+      transition:
+        background-color var(--dur-short) var(--ease-out),
+        border-color var(--dur-short) var(--ease-out);
+    }
+    .round-dot--player   { background: var(--color-accent); border-color: var(--color-accent); }
+    .round-dot--opponent { background: var(--color-fire);   border-color: var(--color-fire); }
+
+    .battle-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      gap: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+    .battle-mascots {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 var(--space-6);
+    }
+    .mascot {
+      font-size: 3rem;
+      transition: transform var(--dur-mid) var(--ease-out);
+      filter: drop-shadow(0 4px 12px var(--color-accent-glow-soft));
+    }
+    .mascot--opponent {
+      transform: scaleX(-1);
+      filter: drop-shadow(0 4px 12px oklch(65% 0.20 42 / 0.25));
+    }
+    .mascot.is-victory   { animation: mascot-victory 650ms var(--ease-out) forwards; }
+    .mascot.is-attacking { animation: mascot-attack  420ms var(--ease-out) forwards; }
+    .mascot--opponent.is-victory   { animation: mascot-victory-opp 650ms var(--ease-out) forwards; }
+    .mascot--opponent.is-attacking { animation: mascot-attack-opp  420ms var(--ease-out) forwards; }
+    @keyframes mascot-victory {
+      0%   { transform: translateY(0)    scale(1);   }
+      35%  { transform: translateY(-18px) scale(1.22); }
+      65%  { transform: translateY(-8px)  scale(1.10); }
+      100% { transform: translateY(0)    scale(1);   }
+    }
+    @keyframes mascot-victory-opp {
+      0%   { transform: scaleX(-1) translateY(0)     scale(1);   }
+      35%  { transform: scaleX(-1) translateY(-18px)  scale(1.22); }
+      65%  { transform: scaleX(-1) translateY(-8px)   scale(1.10); }
+      100% { transform: scaleX(-1) translateY(0)     scale(1);   }
+    }
+    @keyframes mascot-attack {
+      0%   { transform: translateX(0); }
+      30%  { transform: translateX(22px); }
+      70%  { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes mascot-attack-opp {
+      0%   { transform: scaleX(-1) translateX(0); }
+      30%  { transform: scaleX(-1) translateX(22px); }
+      70%  { transform: scaleX(-1) translateX(-6px); }
+      100% { transform: scaleX(-1) translateX(0); }
+    }
+
+    .battle-word-card {
+      text-align: center;
+      background: var(--color-paper-2);
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-sm);
+      padding: var(--space-5) var(--space-6);
+      width: 100%;
+      box-shadow: 0 0 32px oklch(87% 0.19 90 / 0.18);
+    }
+    .battle-word-card__label {
+      font-family: var(--font-display);
+      font-size: 0.44rem;
+      color: var(--color-muted);
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-2);
+    }
+    .battle-word-card__word {
+      font-family: var(--font-body);
+      font-size: var(--text-sanskrit);
+      color: var(--color-accent);
+      text-shadow: 0 0 24px var(--color-accent-glow);
+      line-height: 1.2;
+      display: block;
+    }
+    .battle-word-card__translit {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-ink-2);
+      margin-top: var(--space-1);
+    }
+    .battle-answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      width: 100%;
+    }
+    .answer-btn {
+      font-family: var(--font-body);
+      font-size: 1.35rem;
+      color: var(--color-ink);
+      background: var(--color-paper-2);
+      border: 2px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3) var(--space-2);
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.35;
+      min-height: 3.2rem;
+      transition:
+        background-color var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+    }
+    .answer-btn:hover:not(:disabled) {
+      background: var(--color-paper-3);
+      border-color: var(--color-accent-dim);
+      transform: translateY(-1px);
+    }
+    .answer-btn:active:not(:disabled)  { transform: translateY(1px); }
+    .answer-btn:focus-visible { outline: 2px solid var(--color-focus); }
+    .answer-btn:disabled { cursor: not-allowed; }
+    .answer-btn--correct { background: var(--color-correct-bg)  !important; border-color: var(--color-correct) !important; color: var(--color-correct-text) !important; }
+    .answer-btn--wrong   { background: var(--color-wrong-bg)    !important; border-color: var(--color-wrong)   !important; color: var(--color-wrong-text)   !important; }
+
+    /* Battle result overlay */
+    .battle-result {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: oklch(12% 0.045 265 / 0.92);
+      gap: var(--space-6);
+      z-index: var(--z-overlay);
+    }
+    .battle-result.is-active { display: flex; }
+    .battle-result__title { font-family: var(--font-display); font-size: var(--text-xl); text-align: center; line-height: 1.5; }
+    .battle-result__title--win  { color: var(--color-accent); text-shadow: 0 0 36px var(--color-accent-glow); }
+    .battle-result__title--lose { color: var(--color-fire); }
+    .battle-result__xp { font-family: var(--font-body); font-size: var(--text-vt-xl); color: var(--color-accent); text-align: center; }
+    .battle-play-again-btn {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-paper);
+      background: var(--color-accent);
+      border: none;
+      padding: var(--space-3) var(--space-6);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 0 var(--color-accent-gold-shadow);
+      transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+    }
+    .battle-play-again-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 var(--color-accent-gold-shadow); }
+    .battle-play-again-btn:active { transform: translateY(2px);  box-shadow: 0 2px 0 var(--color-accent-gold-shadow); }
+    .battle-play-again-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+    /* ── VIEW: PROFILE ──────────────────────── */
+    .profile-view { padding: var(--space-6) var(--space-4) var(--space-10); }
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-6) 0;
+      border-bottom: 1px solid var(--color-rule);
+      margin-bottom: var(--space-6);
+    }
+    .profile-avatar { font-size: 4rem; filter: drop-shadow(0 0 18px var(--color-accent-glow)); }
+    .profile-name { font-family: var(--font-display); font-size: var(--text-xs); color: var(--color-ink); letter-spacing: 0.03em; }
+    .profile-level { font-family: var(--font-body); font-size: var(--text-vt-lg); color: var(--color-accent); }
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .stat-card {
+      background: var(--color-paper-2);
+      border: 1px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .stat-card__value {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-card__label { font-family: var(--font-body); font-size: var(--text-vt-base); color: var(--color-muted); }
+    .stat-card--fire .stat-card__value { color: var(--color-fire); }
+    .profile-section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-accent);
+      margin-bottom: var(--space-3);
+      letter-spacing: 0.1em;
+    }
+    .deity-picker { display: flex; gap: var(--space-3); margin-bottom: var(--space-8); }
+    .deity-option {
+      flex: 1;
+      background: var(--color-paper-2);
+      border: 2px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+    }
+    .deity-option.is-selected {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 18px oklch(87% 0.19 90 / 0.22);
+    }
+    .deity-option:hover:not(.is-selected) { border-color: var(--color-accent-dim); }
+    .deity-option:focus-visible { outline: 2px solid var(--color-focus); }
+    .deity-option__icon { font-size: 2rem; }
+    .deity-option__name {
+      font-family: var(--font-display);
+      font-size: 0.4rem;
+      color: var(--color-ink-2);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .deity-option.is-selected .deity-option__name { color: var(--color-accent); }
+
+    /* ── LESSON MODAL ───────────────────────── */
+    .lesson-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--color-paper);
+      z-index: var(--z-modal);
+      display: none;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .lesson-modal.is-open { display: flex; }
+    .lesson-modal__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4);
+      border-bottom: 2px solid var(--color-rule);
+      background: var(--color-paper-2);
+      flex-shrink: 0;
+      gap: var(--space-4);
+    }
+    .lesson-modal__progress {
+      height: 4px;
+      background: var(--color-rule);
+      border-radius: 2px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .lesson-modal__progress-fill {
+      height: 100%;
+      background: var(--color-accent);
+      border-radius: 2px;
+      transition: width var(--dur-mid) var(--ease-out);
+      box-shadow: 0 0 8px var(--color-accent-glow);
+    }
+    .lesson-close-btn {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-muted);
+      background: none;
+      border: 1px solid var(--color-rule);
+      padding: var(--space-2) var(--space-3);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .lesson-close-btn:hover { color: var(--color-ink); border-color: var(--color-ink-2); }
+    .lesson-close-btn:focus-visible { outline: 2px solid var(--color-focus); }
+    .lesson-modal__content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+    /* Word card */
+    .lesson-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-6);
+      gap: var(--space-5);
+      text-align: center;
+    }
+    .lesson-card.is-hidden { display: none; }
+    .lesson-card__sanskrit {
+      font-family: var(--font-body);
+      font-size: var(--text-sanskrit);
+      color: var(--color-accent);
+      text-shadow: 0 0 32px var(--color-accent-glow), 0 0 64px oklch(87% 0.19 90 / 0.18);
+      line-height: 1.2;
+      animation: glow-breathe 3s var(--ease-in-out) infinite;
+    }
+    @keyframes glow-breathe {
+      0%, 100% { text-shadow: 0 0 24px oklch(87% 0.19 90 / 0.45); }
+      50%       { text-shadow: 0 0 44px oklch(87% 0.19 90 / 0.75), 0 0 80px oklch(87% 0.19 90 / 0.25); }
+    }
+    .lesson-card__translit {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-lg);
+      color: var(--color-ink-2);
+    }
+    .lesson-card__meaning {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--color-ink);
+      letter-spacing: 0.02em;
+      max-width: 24ch;
+      line-height: 2;
+    }
+    .lesson-card__usage {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-muted);
+      max-width: 34ch;
+      border-top: 1px solid var(--color-rule);
+      padding-top: var(--space-4);
+      line-height: 1.55;
+    }
+    .lesson-continue-btn {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-paper);
+      background: var(--color-accent);
+      border: none;
+      padding: var(--space-4) var(--space-8);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.04em;
+      box-shadow: 0 4px 0 var(--color-accent-gold-shadow), 0 0 24px oklch(87% 0.19 90 / 0.28);
+      transition:
+        transform var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+      margin-bottom: var(--space-8);
+    }
+    .lesson-continue-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 0 var(--color-accent-gold-shadow), 0 0 36px oklch(87% 0.19 90 / 0.38); }
+    .lesson-continue-btn:active { transform: translateY(2px);  box-shadow: 0 2px 0 var(--color-accent-gold-shadow); }
+    .lesson-continue-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+    /* Quiz card */
+    .quiz-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-6) var(--space-4) var(--space-4);
+      gap: var(--space-4);
+    }
+    .quiz-card.is-hidden { display: none; }
+    .quiz-prompt {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      color: var(--color-muted);
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+    .quiz-word {
+      font-family: var(--font-body);
+      font-size: var(--text-sanskrit);
+      color: var(--color-accent);
+      text-shadow: 0 0 22px var(--color-accent-glow);
+      text-align: center;
+      line-height: 1.2;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      flex: 1;
+    }
+    .quiz-option-btn {
+      font-family: var(--font-body);
+      font-size: var(--text-vt-base);
+      color: var(--color-ink);
+      background: var(--color-paper-2);
+      border: 2px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4) var(--space-3);
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.4;
+      transition:
+        background-color var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+    }
+    .quiz-option-btn:hover:not(:disabled) {
+      background: var(--color-paper-3);
+      border-color: var(--color-accent-dim);
+      transform: translateY(-1px);
+    }
+    .quiz-option-btn:disabled { cursor: not-allowed; }
+    .quiz-option-btn:focus-visible { outline: 2px solid var(--color-focus); }
+    .quiz-option-btn--correct { background: var(--color-correct-bg)  !important; border-color: var(--color-correct) !important; color: var(--color-correct-text) !important; }
+    .quiz-option-btn--wrong   { background: var(--color-wrong-bg)    !important; border-color: var(--color-wrong)   !important; color: var(--color-wrong-text)   !important; }
+    .quiz-feedback {
+      font-family: var(--font-display);
+      font-size: var(--text-px);
+      text-align: center;
+      min-height: 1.4rem;
+      letter-spacing: 0.04em;
+    }
+    .quiz-feedback--correct { color: var(--color-correct-text); }
+    .quiz-feedback--wrong   { color: var(--color-wrong-text); }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 375px) {
+      .lb-title          { font-size: var(--text-sm); }
+      .battle-lobby__title { font-size: var(--text-md); }
+      .lesson-node:nth-child(odd)  { padding-right: 30%; }
+      .lesson-node:nth-child(even) { padding-left:  30%; }
+    }
+    @media (max-width: 320px) {
+      .battle-answers { grid-template-columns: 1fr; }
+      .quiz-options   { grid-template-columns: 1fr; }
+    }
+
+    /* ── REDUCED MOTION ─────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 150ms !important;
+        transition-duration: 100ms !important;
+      }
+      @keyframes pulse-gold     { from, to { box-shadow: 0 0 14px oklch(87% 0.19 90 / 0.28); } }
+      @keyframes flicker        { from, to { opacity: 1; } }
+      @keyframes glow-breathe   { from, to { text-shadow: 0 0 24px oklch(87% 0.19 90 / 0.45); } }
+    }
+  </style>
+</head>
+<body>
+<div class="app" role="main">
+
+  <!-- ── HEADER ── -->
+  <header class="app-header">
+    <span class="app-header__wordmark">⚡ SHAKTI</span>
+    <div class="app-header__stats">
+      <span class="stat-pill" id="xpDisplay">⚡ 340 XP</span>
+      <span class="stat-pill stat-pill--fire" id="streakDisplay">🔥 7</span>
+    </div>
+  </header>
+
+  <!-- ── VIEWS ── -->
+  <div class="view-container">
+
+    <!-- LEARN -->
+    <section class="view is-active" id="view-learn" aria-label="Learn">
+      <div class="learn-view">
+
+        <div class="learn-category">
+          <div class="learn-category__title">SHLOKAS</div>
+          <div class="learn-path">
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('gayatri')">
+                <span class="lesson-btn__icon">🕉️</span>
+                <span class="lesson-btn__title">GAYATRI</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('mool_mantra')">
+                <span class="lesson-btn__icon">📿</span>
+                <span class="lesson-btn__title">MOOL MANTRA</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--active" onclick="openLesson('shanti_path')">
+                <span class="lesson-btn__icon">🪔</span>
+                <span class="lesson-btn__title">SHANTI PATH</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--locked" disabled aria-label="Mahamrityunjaya — locked">
+                <span class="lesson-btn__icon">🔒</span>
+                <span class="lesson-btn__title">MAHAMRITYUNJAYA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="learn-category">
+          <div class="learn-category__title">DEVANAGARI</div>
+          <div class="learn-path">
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('vowels')">
+                <span class="lesson-btn__icon" aria-hidden="true">अ</span>
+                <span class="lesson-btn__title">VOWELS</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--active" onclick="openLesson('consonants')">
+                <span class="lesson-btn__icon" aria-hidden="true">क</span>
+                <span class="lesson-btn__title">CONSONANTS</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--locked" disabled aria-label="Conjuncts — locked">
+                <span class="lesson-btn__icon">🔒</span>
+                <span class="lesson-btn__title">CONJUNCTS</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="learn-category">
+          <div class="learn-category__title">GOD STORIES</div>
+          <div class="learn-path">
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('ganesha')">
+                <span class="lesson-btn__icon">🐘</span>
+                <span class="lesson-btn__title">GANESHA</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--locked" disabled aria-label="Krishna — locked">
+                <span class="lesson-btn__icon">🔒</span>
+                <span class="lesson-btn__title">KRISHNA</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--locked" disabled aria-label="Shiva — locked">
+                <span class="lesson-btn__icon">🔒</span>
+                <span class="lesson-btn__title">SHIVA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="learn-category">
+          <div class="learn-category__title">VOCABULARY</div>
+          <div class="learn-path">
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('greetings')">
+                <span class="lesson-btn__icon">🙏</span>
+                <span class="lesson-btn__title">GREETINGS</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--complete" onclick="openLesson('nature')">
+                <span class="lesson-btn__icon">🌿</span>
+                <span class="lesson-btn__title">NATURE</span>
+                <span class="lesson-btn__check">✓</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--active" onclick="openLesson('cosmos')">
+                <span class="lesson-btn__icon">⭐</span>
+                <span class="lesson-btn__title">COSMOS</span>
+              </button>
+            </div>
+            <div class="lesson-node">
+              <button class="lesson-btn lesson-btn--locked" disabled aria-label="Emotions — locked">
+                <span class="lesson-btn__icon">🔒</span>
+                <span class="lesson-btn__title">EMOTIONS</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BATTLE -->
+    <section class="view" id="view-battle" aria-label="Battle">
+      <div class="battle-view">
+
+        <div class="battle-lobby" id="battleLobby">
+          <div class="battle-lobby__title">⚔️ BATTLE<br>MODE ⚔️</div>
+          <p class="battle-lobby__desc">Challenge a player to a 1v1 Sanskrit quiz duel. Best of 5 rounds wins.</p>
+          <div class="battle-lobby__rules" aria-label="Battle rules">
+            <p>🕉️ A Sanskrit word appears</p>
+            <p>⚡ Answer before your opponent</p>
+            <p>🏆 First to <span>3 rounds</span> wins</p>
+            <p>💰 Winner earns <span>+50 Shakti XP</span></p>
+          </div>
+          <button class="battle-start-btn" onclick="startBattle()">FIND OPPONENT</button>
+        </div>
+
+        <div class="battle-arena" id="battleArena" aria-live="polite">
+          <div class="battle-scoreboard">
+            <div class="battle-player-info">
+              <span class="battle-player-info__deity" id="playerDeity" aria-hidden="true">🐘</span>
+              <span class="battle-player-info__name">YOU</span>
+              <span class="battle-player-info__score" id="playerScore">0</span>
+            </div>
+            <div class="battle-round-dots" id="roundDots" aria-label="Round results">
+              <div class="round-dot"></div>
+              <div class="round-dot"></div>
+              <div class="round-dot"></div>
+              <div class="round-dot"></div>
+              <div class="round-dot"></div>
+            </div>
+            <div class="battle-player-info">
+              <span class="battle-player-info__deity" aria-hidden="true">🎵</span>
+              <span class="battle-player-info__name">ARJUN_42</span>
+              <span class="battle-player-info__score" id="opponentScore">0</span>
+            </div>
+          </div>
+
+          <div class="battle-stage">
+            <div class="battle-mascots" aria-hidden="true">
+              <div class="mascot" id="playerMascot">🐘</div>
+              <div class="mascot mascot--opponent" id="opponentMascot">🎵</div>
+            </div>
+
+            <div class="battle-word-card">
+              <div class="battle-word-card__label">TRANSLATE THIS WORD</div>
+              <span class="battle-word-card__word" id="battleWord">ॐ</span>
+              <div class="battle-word-card__translit" id="battleTranslit">Om</div>
+            </div>
+
+            <div class="battle-answers" id="battleAnswers">
+              <button class="answer-btn" onclick="submitBattleAnswer(this, 0)">Peace</button>
+              <button class="answer-btn" onclick="submitBattleAnswer(this, 1)">Sacred sound</button>
+              <button class="answer-btn" onclick="submitBattleAnswer(this, 2)">Fire</button>
+              <button class="answer-btn" onclick="submitBattleAnswer(this, 3)">Soul</button>
+            </div>
+
+            <div class="battle-result" id="battleResult" role="status">
+              <div class="battle-result__title battle-result__title--win" id="battleResultTitle">VICTORY!</div>
+              <div class="battle-result__xp" id="battleResultXp">+50 XP 🏆</div>
+              <button class="battle-play-again-btn" onclick="resetBattle()">PLAY AGAIN</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section class="view" id="view-leaderboard" aria-label="Leaderboard">
+      <div class="leaderboard-view">
+        <div class="lb-title">🏆 HIGH SCORES 🏆</div>
+
+        <div class="lb-podium" aria-label="Top 3 players">
+          <div class="podium-player podium-player--2">
+            <div class="podium-player__trophy" aria-hidden="true">🥈</div>
+            <div class="podium-player__name">MEERA_D</div>
+            <div class="podium-player__xp">1240 XP</div>
+            <div class="podium-base podium-base--2"><span class="podium-base__rank">#2</span></div>
+          </div>
+          <div class="podium-player podium-player--1">
+            <div class="podium-player__trophy" aria-hidden="true">🥇</div>
+            <div class="podium-player__name">ARJUN_42</div>
+            <div class="podium-player__xp">1890 XP</div>
+            <div class="podium-base podium-base--1"><span class="podium-base__rank">#1</span></div>
+          </div>
+          <div class="podium-player podium-player--3">
+            <div class="podium-player__trophy" aria-hidden="true">🥉</div>
+            <div class="podium-player__name">RISHI_V</div>
+            <div class="podium-player__xp">980 XP</div>
+            <div class="podium-base podium-base--3"><span class="podium-base__rank">#3</span></div>
+          </div>
+        </div>
+
+        <table class="lb-table" aria-label="Full leaderboard">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">PLAYER</th>
+              <th scope="col">DEITY</th>
+              <th scope="col">XP</th>
+              <th scope="col">STREAK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="lb-row"><td class="lb-row__rank">1</td><td class="lb-row__name">ARJUN_42</td><td aria-label="Krishna">🎵</td><td class="lb-row__xp">1890</td><td class="lb-row__streak">🔥 21</td></tr>
+            <tr class="lb-row"><td class="lb-row__rank">2</td><td class="lb-row__name">MEERA_D</td><td aria-label="Vishnu">🙏</td><td class="lb-row__xp">1240</td><td class="lb-row__streak">🔥 14</td></tr>
+            <tr class="lb-row"><td class="lb-row__rank">3</td><td class="lb-row__name">RISHI_V</td><td aria-label="Ganesha">🐘</td><td class="lb-row__xp">980</td><td class="lb-row__streak">🔥 9</td></tr>
+            <tr class="lb-row lb-row--self" aria-current="true"><td class="lb-row__rank">4</td><td class="lb-row__name">YOU ▶</td><td id="selfDeity" aria-label="Your deity">🐘</td><td class="lb-row__xp">340</td><td class="lb-row__streak">🔥 7</td></tr>
+            <tr class="lb-row"><td class="lb-row__rank">5</td><td class="lb-row__name">KAVYA_S</td><td aria-label="Vishnu">🙏</td><td class="lb-row__xp">290</td><td class="lb-row__streak">🔥 4</td></tr>
+            <tr class="lb-row"><td class="lb-row__rank">6</td><td class="lb-row__name">DEV_RAJ</td><td aria-label="Saraswati">🎵</td><td class="lb-row__xp">185</td><td class="lb-row__streak">🔥 2</td></tr>
+            <tr class="lb-row"><td class="lb-row__rank">7</td><td class="lb-row__name">PRIYA_M</td><td aria-label="Ganesha">🐘</td><td class="lb-row__xp">120</td><td class="lb-row__streak">🔥 1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" id="view-profile" aria-label="Profile">
+      <div class="profile-view">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatar" aria-hidden="true">🐘</div>
+          <div class="profile-name">SHAKTI_USER</div>
+          <div class="profile-level">⚡ Level 4 Sanskrit Student</div>
+        </div>
+        <div class="profile-stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__value" id="profileXP">340</div>
+            <div class="stat-card__label">Total XP</div>
+          </div>
+          <div class="stat-card stat-card--fire">
+            <div class="stat-card__value">7</div>
+            <div class="stat-card__label">Day Streak 🔥</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__value">12</div>
+            <div class="stat-card__label">Lessons Done</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__value">5</div>
+            <div class="stat-card__label">Battles Won</div>
+          </div>
+        </div>
+        <div class="profile-section-title">CHOOSE YOUR DEITY</div>
+        <div class="deity-picker" role="radiogroup" aria-label="Choose your deity">
+          <button class="deity-option is-selected" onclick="selectDeity(this,'🐘','Ganesha')" aria-pressed="true">
+            <span class="deity-option__icon" aria-hidden="true">🐘</span>
+            <span class="deity-option__name">GANESHA</span>
+          </button>
+          <button class="deity-option" onclick="selectDeity(this,'🎵','Saraswati')" aria-pressed="false">
+            <span class="deity-option__icon" aria-hidden="true">🎵</span>
+            <span class="deity-option__name">SARASWATI</span>
+          </button>
+          <button class="deity-option" onclick="selectDeity(this,'🙏','Vishnu')" aria-pressed="false">
+            <span class="deity-option__icon" aria-hidden="true">🙏</span>
+            <span class="deity-option__name">VISHNU</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /view-container -->
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn is-active" id="nav-learn" onclick="switchView('learn')" aria-current="page">
+      <span class="nav-btn__icon" aria-hidden="true">📖</span>
+      <span class="nav-btn__label">LEARN</span>
+    </button>
+    <button class="nav-btn nav-btn--battle" id="nav-battle" onclick="switchView('battle')">
+      <span class="nav-btn__icon" aria-hidden="true">⚔️</span>
+      <span class="nav-btn__label">BATTLE</span>
+    </button>
+    <button class="nav-btn" id="nav-leaderboard" onclick="switchView('leaderboard')">
+      <span class="nav-btn__icon" aria-hidden="true">🏆</span>
+      <span class="nav-btn__label">RANKS</span>
+    </button>
+    <button class="nav-btn" id="nav-profile" onclick="switchView('profile')">
+      <span class="nav-btn__icon" aria-hidden="true">👤</span>
+      <span class="nav-btn__label">PROFILE</span>
+    </button>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- ── LESSON MODAL ── -->
+<div class="lesson-modal" id="lessonModal" role="dialog" aria-modal="true" aria-label="Sanskrit Lesson">
+  <div class="lesson-modal__header">
+    <div class="lesson-modal__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="lesson-modal__progress-fill" id="lessonProgress" style="width:0%"></div>
+    </div>
+    <button class="lesson-close-btn" onclick="closeLesson()">✕ QUIT</button>
+  </div>
+  <div class="lesson-modal__content">
+    <div class="lesson-card" id="lessonWordCard">
+      <span class="lesson-card__sanskrit" id="lessonSanskrit">नमस्ते</span>
+      <div class="lesson-card__translit" id="lessonTranslit">Namaste</div>
+      <div class="lesson-card__meaning" id="lessonMeaning">I bow to you</div>
+      <div class="lesson-card__usage" id="lessonUsage">"नमस्ते" honors the divine spark in every person.</div>
+      <button class="lesson-continue-btn" onclick="showQuiz()">CONTINUE →</button>
+    </div>
+    <div class="quiz-card is-hidden" id="lessonQuizCard">
+      <div class="quiz-prompt">WHAT DOES THIS MEAN?</div>
+      <div class="quiz-word" id="quizWord">नमस्ते</div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback" role="status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────
+
+const LESSONS = {
+  greetings: { words: [
+    { s:'नमस्ते', t:'Namaste',    m:'I bow to you',         u:'"नमस्ते" honors the divine in every person you meet.',                           o:['I bow to you','Sacred sound','Thank you','Be well'],      c:0 },
+    { s:'धन्यवाद', t:'Dhanyavaad', m:'Thank you',            u:'From "धन्य" (blessed) + "वाद" (speech) — a blessing returned.',                 o:['Hello','Goodbye','Thank you','Please'],                   c:2 },
+    { s:'स्वागतम्', t:'Svaagatam',  m:'Welcome',             u:'"आओ, स्वागत है" — Come, you are welcome.',                                      o:['Farewell','Welcome','Peace','Blessings'],                  c:1 },
+  ]},
+  cosmos: { words: [
+    { s:'ब्रह्माण्ड', t:'Brahmaanda', m:'Universe / cosmos',    u:'Literally "Brahma\'s egg" — the vast cosmic egg from which all existence hatched.', o:['Earth','Universe / cosmos','Sky','Time'],             c:1 },
+    { s:'आकाश',    t:'Aakaasha',   m:'Sky / space / ether',  u:'One of the five elements. It contains all sound.',                              o:['Fire','Water','Sky / ether','Wind'],                       c:2 },
+    { s:'काल',     t:'Kaala',      m:'Time / death',          u:'"काल" is both time and death — for time devours all.',                         o:['Space','Time / death','Light','Darkness'],                 c:1 },
+  ]},
+  shanti_path: { words: [
+    { s:'शान्ति',  t:'Shanti',    m:'Peace',                 u:'"ॐ शान्तिः शान्तिः शान्तिः" — said three times to pacify the three planes.',  o:['War','Peace','Power','Love'],                              c:1 },
+    { s:'सर्वे',  t:'Sarve',     m:'All / everyone',        u:'"सर्वे भवन्तु सुखिनः" — May all beings be happy.',                            o:['Some','None','All / everyone','Few'],                      c:2 },
+    { s:'सुखम्',  t:'Sukham',    m:'Happiness / ease',      u:'"सु" (good) + "ख" (space). The opposite of दुःखम्.',                          o:['Sadness','Anger','Happiness / ease','Fear'],               c:2 },
+  ]},
+  consonants: { words: [
+    { s:'क',  t:'Ka', m:'The letter KA', u:'"क" is the first consonant — "ka" as in "karma".',         o:['GA','KA','CHA','TA'], c:1 },
+    { s:'ग',  t:'Ga', m:'The letter GA', u:'"ग" as in "Ganesha" — the remover of obstacles.',          o:['GA','DA','PA','BA'],  c:0 },
+    { s:'म',  t:'Ma', m:'The letter MA', u:'"म" begins "OM" — written in full as अ-उ-म.',               o:['NA','MA','LA','SA'],  c:1 },
+  ]},
+  nature: { words: [
+    { s:'वायु', t:'Vaayu', m:'Wind / air', u:'Vayu is the god of wind and vital breath — father of Hanuman.',    o:['Fire','Earth','Wind / air','Water'], c:2 },
+    { s:'जल',  t:'Jala',  m:'Water',      u:'"जल" is one of the five elements.',                                o:['Water','Earth','Sky','Seed'],        c:0 },
+    { s:'अग्नि',t:'Agni', m:'Fire',       u:'Agni is the sacred fire god — present in every flame and star.',    o:['Ice','Stone','Fire','River'],        c:2 },
+  ]},
+  vowels: { words: [
+    { s:'अ', t:'A', m:'The vowel A', u:'"अ" is the first sound — the open throat, the start of all speech.', o:['I','U','A','E'], c:2 },
+    { s:'इ', t:'I', m:'The vowel I', u:'"इ" as in "इन्द्र" (Indra) — king of the gods.',                    o:['A','I','U','O'], c:1 },
+  ]},
+  ganesha: { words: [
+    { s:'विघ्नेश', t:'Vighnesha', m:'Lord of obstacles', u:'Vighna (obstacle) + Isha (lord). Ganesha removes obstacles before any new start.', o:['Lord of music','Lord of obstacles','Lord of time','Lord of fire'], c:1 },
+    { s:'बुद्धि',  t:'Buddhi',    m:'Intellect / wisdom', u:'Ganesha\'s consort is बुद्धि — he is the patron of wisdom.',                     o:['Strength','Courage','Intellect / wisdom','Beauty'],               c:2 },
+  ]},
+  gayatri: { words: [
+    { s:'सवितुर्',  t:'Savitur',   m:'Of the sun / solar', u:'"सवितुर्" refers to Savitur — the life-giving aspect of the sun.',             o:['Of the moon','Of the sun / solar','Of the earth','Of the stars'], c:1 },
+    { s:'वरेण्यम्', t:'Varenyam',  m:'Worthy of worship',  u:'From "वर" (boon, excellent) — the divine light as supremely worthy.',          o:['Most powerful','Worthy of worship','Most ancient','Most bright'],  c:1 },
+  ]},
+  mool_mantra: { words: [
+    { s:'निर्भय', t:'Nirbhay', m:'Fearless',            u:'"नि" (without) + "भय" (fear). The divine is beyond all fear.',   o:['Powerful','Fearless','Ancient','Endless'],                   c:1 },
+    { s:'अकाल',  t:'Akaal',   m:'Beyond time / deathless', u:'"अ" (not) + "काल" (time/death). The eternal one.',           o:['In time','Beyond time / deathless','Before time','After time'],c:1 },
+  ]},
+};
+
+const BATTLE_QS = [
+  { w:'ॐ',      t:'Om',       o:['Silence','Sacred sound','Fire','Soul'],              c:1 },
+  { w:'धर्म',   t:'Dharma',   o:['Duty / cosmic order','Fate','Karma','Desire'],       c:0 },
+  { w:'कर्म',   t:'Karma',    o:['Fate','Luck','Action & consequence','Death'],         c:2 },
+  { w:'आत्मा',  t:'Atma',     o:['Mind','Body','Soul / self','Spirit world'],           c:2 },
+  { w:'मोक्ष',  t:'Moksha',   o:['Death','Liberation','Heaven','Peace'],               c:1 },
+  { w:'माया',   t:'Maya',     o:['Truth','Illusion / delusion','Power','Love'],         c:1 },
+  { w:'तप',     t:'Tapa',     o:['Heat / austerity','Water','Air','Light'],             c:0 },
+  { w:'प्रेम',  t:'Prema',    o:['Anger','Sorrow','Divine love','Joy'],                 c:2 },
+  { w:'ज्ञान',  t:'Jnaana',   o:['Skill','Knowledge / wisdom','Speech','Power'],        c:1 },
+  { w:'मुक्ति', t:'Mukti',    o:['Bondage','Liberation','Death','Dream'],               c:1 },
+];
+
+// ── STATE ──────────────────────────────────────────
+
+let playerDeityIcon = '🐘';
+let playerXP = 340;
+
+let battleState = {
+  qs: [], qi: 0, ps: 0, os: 0, answered: false, timer: null
+};
+let lessonState = { key: null, wi: 0, words: [] };
+
+// ── NAV ────────────────────────────────────────────
+
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+  document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('is-active'); b.removeAttribute('aria-current'); });
+  const view = document.getElementById('view-' + name);
+  const btn  = document.getElementById('nav-'  + name);
+  if (view) view.classList.add('is-active');
+  if (btn)  { btn.classList.add('is-active'); btn.setAttribute('aria-current', 'page'); }
+}
+
+// ── DEITY ──────────────────────────────────────────
+
+function selectDeity(btn, icon) {
+  document.querySelectorAll('.deity-option').forEach(b => { b.classList.remove('is-selected'); b.setAttribute('aria-pressed','false'); });
+  btn.classList.add('is-selected');
+  btn.setAttribute('aria-pressed','true');
+  playerDeityIcon = icon;
+  document.getElementById('profileAvatar').textContent = icon;
+  document.getElementById('playerDeity').textContent   = icon;
+  document.getElementById('playerMascot').textContent  = icon;
+  document.getElementById('selfDeity').textContent     = icon;
+}
+
+// ── LESSONS ────────────────────────────────────────
+
+function openLesson(key) {
+  const data = LESSONS[key];
+  if (!data) return;
+  lessonState = { key, wi: 0, words: data.words };
+  showLessonWord();
+  const modal = document.getElementById('lessonModal');
+  modal.classList.add('is-open');
+  modal.querySelector('.lesson-close-btn').focus();
+}
+
+function closeLesson() {
+  document.getElementById('lessonModal').classList.remove('is-open');
+}
+
+function setProgress(pct) {
+  const el = document.getElementById('lessonProgress');
+  el.style.width = pct + '%';
+  el.closest('[role=progressbar]').setAttribute('aria-valuenow', Math.round(pct));
+}
+
+function showLessonWord() {
+  const { wi, words } = lessonState;
+  if (wi >= words.length) { closeLesson(); return; }
+  const w = words[wi];
+  setProgress((wi / (words.length * 2)) * 100);
+  document.getElementById('lessonSanskrit').textContent = w.s;
+  document.getElementById('lessonTranslit').textContent = w.t;
+  document.getElementById('lessonMeaning').textContent  = w.m;
+  document.getElementById('lessonUsage').textContent    = '“' + w.s + '” — ' + w.u;
+  document.getElementById('lessonWordCard').classList.remove('is-hidden');
+  document.getElementById('lessonQuizCard').classList.add('is-hidden');
+}
+
+function showQuiz() {
+  const w = lessonState.words[lessonState.wi];
+  setProgress(((lessonState.wi + 0.5) / (lessonState.words.length * 2)) * 100);
+  document.getElementById('quizWord').textContent = w.s;
+  document.getElementById('quizFeedback').textContent = '';
+  document.getElementById('quizFeedback').className = 'quiz-feedback';
+  const opts = document.getElementById('quizOptions');
+  opts.innerHTML = '';
+  w.o.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => answerQuiz(i, w.c, btn, opts));
+    opts.appendChild(btn);
+  });
+  document.getElementById('lessonWordCard').classList.add('is-hidden');
+  document.getElementById('lessonQuizCard').classList.remove('is-hidden');
+  opts.querySelector('button').focus();
+}
+
+function answerQuiz(chosen, correct, chosenBtn, opts) {
+  opts.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
+  const fb = document.getElementById('quizFeedback');
+  if (chosen === correct) {
+    chosenBtn.classList.add('quiz-option-btn--correct');
+    fb.textContent = '✓ CORRECT! +10 XP';
+    fb.className = 'quiz-feedback quiz-feedback--correct';
+    playerXP += 10; updateXP();
+    setTimeout(advanceLesson, 1400);
+  } else {
+    chosenBtn.classList.add('quiz-option-btn--wrong');
+    opts.querySelectorAll('.quiz-option-btn')[correct].classList.add('quiz-option-btn--correct');
+    fb.textContent = '✕ NOT QUITE — keep going!';
+    fb.className = 'quiz-feedback quiz-feedback--wrong';
+    setTimeout(advanceLesson, 1800);
+  }
+}
+
+function advanceLesson() {
+  lessonState.wi++;
+  if (lessonState.wi >= lessonState.words.length) {
+    setProgress(100); playerXP += 20; updateXP();
+    setTimeout(closeLesson, 500);
+  } else { showLessonWord(); }
+}
+
+function updateXP() {
+  document.getElementById('xpDisplay').textContent  = '⚡ ' + playerXP + ' XP';
+  document.getElementById('profileXP').textContent  = playerXP;
+}
+
+// ── BATTLE ─────────────────────────────────────────
+
+function startBattle() {
+  const shuffled = [...BATTLE_QS].sort(() => Math.random() - 0.5).slice(0, 5);
+  battleState = { qs: shuffled, qi: 0, ps: 0, os: 0, answered: false, timer: null };
+  document.getElementById('battleLobby').style.display = 'none';
+  const arena = document.getElementById('battleArena');
+  arena.classList.add('is-active');
+  document.getElementById('playerScore').textContent   = '0';
+  document.getElementById('opponentScore').textContent = '0';
+  document.getElementById('playerDeity').textContent   = playerDeityIcon;
+  document.getElementById('playerMascot').textContent  = playerDeityIcon;
+  resetDots(); loadBQ();
+}
+
+function loadBQ() {
+  if (battleState.qi >= battleState.qs.length) { endBattle(); return; }
+  battleState.answered = false;
+  const q = battleState.qs[battleState.qi];
+  document.getElementById('battleWord').textContent   = q.w;
+  document.getElementById('battleTranslit').textContent = q.t;
+  const btns = document.getElementById('battleAnswers').querySelectorAll('.answer-btn');
+  btns.forEach((btn, i) => { btn.textContent = q.o[i]; btn.className = 'answer-btn'; btn.disabled = false; });
+  battleState.timer = setTimeout(() => { if (!battleState.answered) opponentAnswer(); }, 2000 + Math.random() * 3200);
+}
+
+function submitBattleAnswer(btn, idx) {
+  if (battleState.answered) return;
+  clearTimeout(battleState.timer);
+  battleState.answered = true;
+  const q = battleState.qs[battleState.qi];
+  document.getElementById('battleAnswers').querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+  if (idx === q.c) {
+    btn.classList.add('answer-btn--correct');
+    battleState.ps++;
+    document.getElementById('playerScore').textContent = battleState.ps;
+    animMascot('playerMascot',   'is-victory');
+    markDot('player');
+  } else {
+    btn.classList.add('answer-btn--wrong');
+    document.getElementById('battleAnswers').querySelectorAll('.answer-btn')[q.c].classList.add('answer-btn--correct');
+    battleState.os++;
+    document.getElementById('opponentScore').textContent = battleState.os;
+    animMascot('opponentMascot', 'is-victory');
+    animMascot('playerMascot',   'is-attacking');
+    markDot('opponent');
+  }
+  checkWin();
+}
+
+function opponentAnswer() {
+  if (battleState.answered) return;
+  battleState.answered = true;
+  const q = battleState.qs[battleState.qi];
+  document.getElementById('battleAnswers').querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+  document.getElementById('battleAnswers').querySelectorAll('.answer-btn')[q.c].classList.add('answer-btn--correct');
+  battleState.os++;
+  document.getElementById('opponentScore').textContent = battleState.os;
+  animMascot('opponentMascot', 'is-victory');
+  animMascot('playerMascot',   'is-attacking');
+  markDot('opponent');
+  checkWin();
+}
+
+function checkWin() {
+  const { ps, os, qi } = battleState;
+  if (ps >= 3 || os >= 3 || qi >= 4) { setTimeout(endBattle, 1200); }
+  else { battleState.qi++; setTimeout(loadBQ, 1500); }
+}
+
+function endBattle() {
+  const won = battleState.ps > battleState.os;
+  const title = document.getElementById('battleResultTitle');
+  const xpEl  = document.getElementById('battleResultXp');
+  if (won) {
+    title.textContent = '⚔️ VICTORY!';
+    title.className   = 'battle-result__title battle-result__title--win';
+    xpEl.textContent  = '+50 XP 🏆';
+    playerXP += 50;
+  } else {
+    title.textContent = 'DEFEATED…';
+    title.className   = 'battle-result__title battle-result__title--lose';
+    xpEl.textContent  = '+10 XP (keep practicing)';
+    playerXP += 10;
+  }
+  updateXP();
+  document.getElementById('battleResult').classList.add('is-active');
+}
+
+function resetBattle() {
+  document.getElementById('battleResult').classList.remove('is-active');
+  document.getElementById('battleLobby').style.display = '';
+  document.getElementById('battleArena').classList.remove('is-active');
+  resetDots();
+}
+
+function resetDots() {
+  document.querySelectorAll('.round-dot').forEach(d => d.className = 'round-dot');
+}
+function markDot(winner) {
+  const dots = document.querySelectorAll('.round-dot');
+  if (dots[battleState.qi]) dots[battleState.qi].classList.add('round-dot--' + winner);
+}
+function animMascot(id, cls) {
+  const el = document.getElementById(id);
+  el.classList.remove('is-victory','is-attacking');
+  void el.offsetWidth;
+  el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), 700);
+}
+
+// ── KEYBOARD ───────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('lessonModal').classList.contains('is-open')) closeLesson();
+});
+</script>
+</body>
+</html>
