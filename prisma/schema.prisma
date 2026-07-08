@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── User ──────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  xp           Int      @default(0)
+  level        Int      @default(1)
+  streakDays   Int      @default(0)
+  lastActiveAt DateTime @default(now())
+  eloRating    Int      @default(1000)
+  role         String   @default("USER") // USER | ADMIN — never set via user-facing API
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  progress        UserProgress[]
+  achievements    Achievement[]
+  battlesAsP1     Battle[]       @relation("Player1")
+  battlesAsP2     Battle[]       @relation("Player2")
+  wonBattles      Battle[]       @relation("Winner")
+  sentFriends     Friendship[]   @relation("FriendshipUser")
+  receivedFriends Friendship[]   @relation("FriendshipFriend")
+
+  @@index([username])
+  @@index([email])
+  @@index([xp])
+  @@index([eloRating])
+}
+
+// ── Lesson ────────────────────────────────────────────────────────────────────
+
+model Lesson {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  category   String   // alphabet | transliteration | vocabulary | grammar | shlokas
+  difficulty String   // beginner | intermediate | advanced
+  xpReward   Int      @default(50)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  questions Question[]
+  progress  UserProgress[]
+
+  @@index([slug])
+  @@index([category])
+}
+
+// ── Question ──────────────────────────────────────────────────────────────────
+
+model Question {
+  id            String   @id @default(cuid())
+  lessonId      String
+  type          String   // mcq | transliterate | fill_blank
+  prompt        String
+  options       Json?    // string[] — required for mcq
+  correctAnswer String
+  explanation   String?
+  audioUrl      String?  // reserved for later
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+}
+
+// ── UserProgress ──────────────────────────────────────────────────────────────
+
+model UserProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+  score       Int      // 0–100
+  xpEarned    Int
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+// ── Battle ────────────────────────────────────────────────────────────────────
+
+model Battle {
+  id        String    @id @default(cuid())
+  player1Id String
+  player2Id String?
+  winnerId  String?
+  status    String    @default("waiting") // waiting | active | finished | abandoned
+  roomCode  String    @unique
+  questions Json      @default("[]") // Question id[] used in this battle
+  rounds    Json      @default("[]") // RoundResult[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  player1 User  @relation("Player1", fields: [player1Id], references: [id])
+  player2 User? @relation("Player2", fields: [player2Id], references: [id])
+  winner  User? @relation("Winner", fields: [winnerId], references: [id])
+
+  @@index([roomCode])
+  @@index([status])
+  @@index([player1Id])
+  @@index([player2Id])
+}
+
+// ── Achievement ───────────────────────────────────────────────────────────────
+
+model Achievement {
+  id             String   @id @default(cuid())
+  userId         String
+  achievementKey String
+  earnedAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementKey])
+  @@index([userId])
+}
+
+// ── Friendship ────────────────────────────────────────────────────────────────
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userId    String
+  friendId  String
+  status    String   @default("pending") // pending | accepted | blocked
+  createdAt DateTime @default(now())
+
+  user   User @relation("FriendshipUser",   fields: [userId],   references: [id], onDelete: Cascade)
+  friend User @relation("FriendshipFriend", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+}
+
+// Sessions live in httpOnly cookies — no session table required.

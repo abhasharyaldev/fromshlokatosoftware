@@ -1,139 +1,406 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
 
 :root {
-  --gold: #FFD700;
-  --saffron: #FF6B35;
-  --bg: #0d0118;
+  --cream: #F4E1C1;
+  --brown: #2A1810;
+  --gold: #D6A84F;
+  --burgundy: #5A1E2D;
+  --pink: #C98A7D;
+  --gold-line: rgba(214, 168, 79, 0.30);
+  --gold-alpha: rgba(214, 168, 79, 0.10);
+  --brown-soft: rgba(42, 24, 16, 0.60);
+  --brown-faint: rgba(42, 24, 16, 0.35);
+  --cream-on-burg: rgba(244, 225, 193, 0.88);
+  --onboard-bg: #0B0806;
+  --sidebar-w: 260px;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: clip;
+}
+
 body {
-  background-color: var(--bg);
-  color: white;
-  font-family: 'VT323', monospace;
-  font-size: 20px;
-  min-height: 100vh;
+  background: var(--cream);
+  color: var(--brown);
+  font-family: 'Manrope', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-.pixel-font {
-  font-family: 'Press Start 2P', monospace;
+/* ── Typography utilities ─────────────────────────────── */
+
+.font-cinzel {
+  font-family: 'Cinzel', 'Times New Roman', serif;
 }
 
-.pixel-border {
-  border: 3px solid var(--gold);
-  box-shadow: 4px 4px 0px #b8860b, inset 0 0 20px rgba(255, 215, 0, 0.05);
+.font-manrope {
+  font-family: 'Manrope', 'Helvetica Neue', sans-serif;
 }
 
-.pixel-btn {
-  font-family: 'Press Start 2P', monospace;
+.font-devanagari {
+  font-family: 'Noto Sans Devanagari', serif;
+  line-height: 1.8;
+}
+
+.eyebrow {
+  font-family: 'Manrope', sans-serif;
   font-size: 11px;
-  background: var(--gold);
-  color: #0d0118;
-  border: none;
-  padding: 14px 28px;
-  cursor: pointer;
-  box-shadow: 4px 4px 0px #b8860b;
-  transition: all 0.1s;
+  font-weight: 500;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  color: var(--gold);
+}
+
+/* ── Gold rule divider ────────────────────────────────── */
+
+.gold-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+.gold-rule::before,
+.gold-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold-line);
+}
+
+/* ── Diamond ornament ─────────────────────────────────── */
+
+.diamond {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.diamond-sm {
+  width: 6px;
+  height: 6px;
+}
+
+.diamond-lg {
+  width: 11px;
+  height: 11px;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.btn-gold {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--gold);
+  border: none;
+  padding: 14px 32px;
+  cursor: pointer;
+  transition: transform 80ms, box-shadow 80ms;
   display: inline-block;
   text-decoration: none;
+  text-align: center;
 }
 
-.pixel-btn:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #b8860b;
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(214,168,79,0.30);
 }
 
-.pixel-btn:active {
-  transform: translate(4px, 4px);
+.btn-gold:active {
+  transform: scale(0.97);
   box-shadow: none;
 }
 
-.pixel-btn-ghost {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 11px;
-  background: transparent;
-  color: var(--gold);
-  border: 3px solid var(--gold);
-  padding: 14px 28px;
-  cursor: pointer;
-  box-shadow: 4px 4px 0px #b8860b;
-  transition: all 0.1s;
+.btn-ghost {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold-line);
+  padding: 14px 32px;
+  cursor: pointer;
+  transition: background 80ms, border-color 80ms;
   display: inline-block;
   text-decoration: none;
+  text-align: center;
 }
 
-.pixel-btn-ghost:hover {
-  background: var(--gold);
-  color: #0d0118;
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #b8860b;
+.btn-ghost:hover {
+  background: var(--gold-alpha);
+  border-color: rgba(214,168,79,0.5);
 }
 
-.pixel-input {
-  background: rgba(255,255,255,0.05);
-  border: 2px solid #6b21a8;
-  color: white;
-  padding: 12px 16px;
-  font-family: 'VT323', monospace;
-  font-size: 22px;
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+/* ── Cards ─────────────────────────────────────────────── */
+
+.card-bordered {
+  border: 1px solid var(--gold-line);
+  background: var(--cream);
+}
+
+.card-lift:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 6px 24px rgba(42,24,16,0.08);
+  transition: transform 200ms, box-shadow 200ms;
+}
+
+/* ── Inputs ────────────────────────────────────────────── */
+
+.input-shloka {
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  background: rgba(244,225,193,0.6);
+  border: 1px solid var(--gold-line);
+  color: var(--brown);
+  padding: 14px 18px;
   width: 100%;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 150ms, background 150ms;
 }
 
-.pixel-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 10px rgba(255,215,0,0.2);
+.input-shloka:focus {
+  border-color: rgba(214,168,79,0.6);
+  background: var(--cream);
 }
 
-.pixel-input::placeholder {
-  color: rgba(255,255,255,0.3);
+.input-shloka::placeholder {
+  color: var(--brown-faint);
 }
 
-.glow-gold {
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
+/* ── Skeleton loading ──────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(42,24,16,0.06) 25%,
+    rgba(42,24,16,0.10) 50%,
+    rgba(42,24,16,0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.2s ease-in-out infinite;
+  border-radius: 2px;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* ── Shake animation (quiz wrong answer) ───────────────── */
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+.shake { animation: shake 300ms ease-out; }
+
+/* ── XP rise animation ─────────────────────────────────── */
+
+@keyframes xp-rise {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-32px); }
 }
 
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
+.xp-rise { animation: xp-rise 600ms ease-out forwards; }
+
+/* ── Lesson wipe ───────────────────────────────────────── */
+
+@keyframes wipe-in {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
 }
 
-.float-anim {
-  animation: float 3s ease-in-out infinite;
+.wipe-in { animation: wipe-in 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* ── Onboarding glow ───────────────────────────────────── */
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.32; }
 }
 
-.blink {
-  animation: blink 1s step-end infinite;
+.char-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
 }
 
-.shimmer-text {
-  background: linear-gradient(90deg, var(--gold), var(--saffron), var(--gold));
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 3s linear infinite;
+/* ── Fade in ───────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fade-in 500ms ease-out forwards;
+}
+
+.fade-in-slow {
+  animation: fade-in 900ms ease-out forwards;
+}
+
+/* ── Skill tree node ring ──────────────────────────────── */
+
+@keyframes ring-spin {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -100; }
+}
+
+/* ── Ember / streak icons ──────────────────────────────── */
+
+.ember-active {
+  width: 10px;
+  height: 14px;
+  background: linear-gradient(to top, var(--gold), rgba(214,168,79,0.5));
+  clip-path: polygon(50% 0%, 80% 40%, 100% 60%, 80% 100%, 20% 100%, 0% 60%, 20% 40%);
+}
+
+.ember-inactive {
+  width: 10px;
+  height: 14px;
+  background: rgba(42,24,16,0.12);
+  clip-path: polygon(50% 0%, 80% 40%, 100% 60%, 80% 100%, 20% 100%, 0% 60%, 20% 40%);
+}
+
+/* ── App shell ─────────────────────────────────────────── */
+
+.app-sidebar {
+  width: var(--sidebar-w);
+  min-height: 100dvh;
+  border-right: 1px solid var(--gold-line);
+  background: var(--cream);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  padding-top: 68px;
+  overflow-y: auto;
+}
+
+.app-main {
+  margin-left: var(--sidebar-w);
+  min-height: 100dvh;
+  padding-top: 68px;
+}
+
+@media (max-width: 1023px) {
+  .app-sidebar { display: none; }
+  .app-main {
+    margin-left: 0;
+    padding-bottom: 72px;
+  }
+}
+
+/* ── Top nav ───────────────────────────────────────────── */
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--gold-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 50;
+}
+
+/* ── Bottom tab bar ────────────────────────────────────── */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: var(--cream);
+  border-top: 1px solid var(--gold-line);
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 50;
+}
+
+@media (max-width: 1023px) {
+  .bottom-nav { display: flex; }
+}
+
+/* ── Progress bar (lesson) ─────────────────────────────── */
+
+.lesson-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(42,24,16,0.08);
+  z-index: 100;
+}
+
+.lesson-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 300ms ease-out;
+}
+
+/* ── Quest card horizontal scroll ─────────────────────── */
+
+.quest-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.quest-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Skill node states ─────────────────────────────────── */
+
+.skill-node-complete circle { fill: var(--gold); }
+.skill-node-active circle { fill: var(--cream); stroke: var(--gold); stroke-width: 2; }
+.skill-node-locked circle { fill: rgba(42,24,16,0.06); stroke: var(--gold-line); stroke-width: 1; }
+
+/* ── Sutra card (achievement) ──────────────────────────── */
+
+.sutra-locked { filter: grayscale(1); opacity: 0.45; }
+
+/* ── Level badge ───────────────────────────────────────── */
+
+.level-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cream);
+  background: var(--burgundy);
+  padding: 4px 10px;
+  letter-spacing: 0.06em;
 }

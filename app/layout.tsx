@@ -1,19 +1,23 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "FromShlokaToSoftware",
-  description: "Learn Sanskrit through the stories of the gods",
-};
+  title: "From Shloka to Software",
+  description: "Learn Sanskrit through the stories of the gods. Ancient wisdom, modern code.",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-full">{children}</body>
     </html>
-  );
+  )
 }

@@ -1,57 +1,118 @@
-import Link from "next/link";
+"use client"
+
+import Link from "next/link"
+import { useActionState } from "react"
+import { login } from "@/app/actions/auth"
 
 export default function Login() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ backgroundColor: "#0d0118" }}>
+  const [state, action, pending] = useActionState(login, null)
 
-      <Link href="/" className="pixel-font glow-gold mb-8 text-center block" style={{ color: "#FFD700", fontSize: "12px" }}>
-        ← FSTS
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-16"
+      style={{ background: "var(--cream)" }}
+    >
+      <Link
+        href="/"
+        className="font-cinzel"
+        style={{
+          fontSize: 13,
+          color: "var(--brown-soft)",
+          textDecoration: "none",
+          letterSpacing: "0.06em",
+          marginBottom: 48,
+          display: "block",
+          textAlign: "center",
+        }}
+      >
+        ← From Shloka to Software
       </Link>
 
-      <div className="w-full max-w-md">
-        <div className="pixel-border p-8 flex flex-col gap-6" style={{ background: "rgba(255,215,0,0.03)" }}>
-          <div className="text-center">
-            <div style={{ fontSize: "48px", marginBottom: "8px" }}>🪔</div>
-            <h1 className="pixel-font glow-gold" style={{ fontSize: "13px", color: "#FFD700" }}>
-              WELCOME BACK
-            </h1>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontFamily: "'VT323', monospace", fontSize: "18px", marginTop: "8px" }}>
-              The gods await your return
-            </p>
+      <div style={{ maxWidth: 440, width: "100%" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 40, height: 1, background: "var(--gold-line)" }} />
+            <div className="diamond" />
+            <div style={{ width: 40, height: 1, background: "var(--gold-line)" }} />
           </div>
-
-          <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="pixel-font" style={{ fontSize: "8px", color: "#FFD700" }}>EMAIL</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="pixel-input"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="pixel-font" style={{ fontSize: "8px", color: "#FFD700" }}>PASSWORD</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="pixel-input"
-              />
-            </div>
-
-            <button type="submit" className="pixel-btn w-full mt-2" style={{ fontSize: "11px" }}>
-              ▶ CONTINUE JOURNEY
-            </button>
-          </form>
-
-          <p className="text-center" style={{ fontFamily: "'VT323', monospace", fontSize: "18px", color: "rgba(255,255,255,0.4)" }}>
-            New here?{" "}
-            <Link href="/signup" style={{ color: "#FFD700", textDecoration: "underline" }}>
-              Create an account
-            </Link>
+          <h1
+            className="font-cinzel"
+            style={{ fontSize: "clamp(22px, 4vw, 32px)", fontWeight: 500, color: "var(--brown)", letterSpacing: "0.03em", marginBottom: 8 }}
+          >
+            Welcome Back
+          </h1>
+          <p className="font-manrope" style={{ fontSize: 15, color: "var(--brown-soft)" }}>
+            The tradition continues where you left it.
           </p>
         </div>
+
+        {/* Error */}
+        {state?.error && (
+          <p className="font-manrope" style={{ color: "#b91c1c", fontSize: 14, textAlign: "center", marginBottom: 8 }}>
+            {state.error}
+          </p>
+        )}
+
+        {/* Form */}
+        <form
+          action={action}
+          style={{ display: "flex", flexDirection: "column", gap: 20 }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <label
+              className="eyebrow"
+              htmlFor="email"
+              style={{ fontSize: 10, color: "var(--brown-soft)" }}
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              className="input-shloka"
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <label
+              className="eyebrow"
+              htmlFor="password"
+              style={{ fontSize: 10, color: "var(--brown-soft)" }}
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder="••••••••"
+              className="input-shloka"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={pending}
+            className="btn-gold"
+            style={{ fontSize: 13, padding: "18px 0", marginTop: 8, width: "100%", opacity: pending ? 0.6 : 1 }}
+          >
+            {pending ? "Signing in…" : "Continue"}
+          </button>
+        </form>
+
+        <p
+          className="font-manrope"
+          style={{ textAlign: "center", marginTop: 24, fontSize: 14, color: "var(--brown-faint)" }}
+        >
+          New to the tradition?{" "}
+          <Link href="/signup" style={{ color: "var(--gold)", textDecoration: "none" }}>
+            Create an account
+          </Link>
+        </p>
       </div>
     </div>
-  );
+  )
 }
